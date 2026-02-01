@@ -2,379 +2,260 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Franxine — Will you be my Valentine?</title>
 
   <style>
-    :root{
-      --primary:#ff4d6d;
-      --bg1:#ff9a9e;
-      --bg2:#fecfef;
-      --card-bg: #fff;
-      --muted:#666;
+    :root {
+      --primary: #ff4d6d;
+      --bg1: #ff9a9e;
+      --bg2: #fecfef;
+      --card-bg: #ffffff;
+      --muted: #666;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter, Poppins, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(160deg,var(--bg1),var(--bg2));
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow:hidden;
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      overflow: hidden; /* prevents scrollbars when confetti falls */
     }
 
     /* Card */
-    .card{
-      width:min(420px,94%);
-      background:var(--card-bg);
-      border-radius:20px;
-      padding:28px;
-      box-shadow: 0 18px 42px rgba(0,0,0,0.18);
-      position:relative;
-      text-align:center;
-      overflow:visible;
+    .card {
+      width: min(420px, 90%);
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 18px 42px rgba(0,0,0,0.15);
+      position: relative;
+      text-align: center;
+      z-index: 10;
     }
 
-    h1{
-      margin:0;
-      color:var(--primary);
-      font-size:1.7rem;
-      letter-spacing:0.2px;
+    h1 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1.8rem;
     }
-    p.lead{
-      margin:8px 0 18px 0;
-      color:var(--muted);
-      font-size:0.98rem;
-    }
-
-    /* Buttons area */
-    .buttons{
-      position:relative;
-      height:140px;              /* safe space for moving NO inside */
-      width:100%;
-      margin-top:6px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    p.lead {
+      margin: 10px 0 20px 0;
+      color: var(--muted);
+      font-size: 1rem;
     }
 
-    button{
-      appearance:none;
-      -webkit-appearance:none;
-      border:0;
-      cursor:pointer;
-      padding:12px 22px;
-      font-size:1rem;
-      border-radius:999px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-      transition:transform .14s ease, opacity .14s ease;
-      user-select:none;
-      touch-action:manipulation;
+    /* Button Container */
+    .buttons {
+      position: relative;
+      height: 180px; /* fixed height for the button to run around in */
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Start at top of container */
+      gap: 20px;
+      margin-top: 20px;
     }
 
-    #yesBtn{
-      background: linear-gradient(90deg,var(--primary),#ff7aa2);
-      color:#fff;
-      margin-right:12px;
-    }
-    #yesBtn:active{ transform:scale(.98) }
-
-    #noBtn{
-      position:absolute;
-      left:62%;
-      top:10px;
-      background:#f3f3f3;
-      color:#333;
-      min-width:84px;
-      transition: left .18s ease, top .18s ease;
+    button {
+      border: 0;
+      cursor: pointer;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      transition: transform 0.1s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* Celebration area (hidden initially) */
-    .celebration{
-      display:none;
-      margin-top:14px;
-      animation:fadeIn .5s ease both;
+    #yesBtn {
+      background: linear-gradient(90deg, var(--primary), #ff7aa2);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+      z-index: 2; /* Ensure YES is always on top */
     }
-    .celebration h2{
-      margin:0;
-      color:var(--primary);
-      font-size:1.25rem;
-    }
-    .celebration p{ margin:6px 0 0 0; color:var(--muted) }
+    #yesBtn:active { transform: scale(0.95); }
 
-    .celebration img{
-      width:100%;
-      max-width:320px;
-      border-radius:12px;
-      margin-top:10px;
-      display:block;
-      margin-left:auto;
-      margin-right:auto;
+    #noBtn {
+      background: #f0f0f0;
+      color: #333;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      /* Initially it is relative, JS turns it absolute to run away */
+      position: relative; 
     }
 
-    /* Floating hearts */
-    .heart {
-      position:absolute;
-      pointer-events:none;
-      width:18px;
-      height:18px;
-      transform:translate(-50%,-50%) scale(0.9);
-      opacity:0.95;
-      will-change: transform, opacity;
+    /* Celebration Area */
+    .celebration {
+      display: none;
+      margin-top: 20px;
+      animation: fadeIn 0.6s ease;
     }
-
-    /* Confetti */
-    .confetti {
-      position:absolute;
-      left:0; top:0; right:0; bottom:0;
-      pointer-events:none;
-      overflow:visible;
-    }
-
-    /* small footer credit */
-    .credit{
-      margin-top:14px;
-      font-size:12px;
-      color:#999;
-      text-align:center;
-      opacity:.95;
+    .celebration h2 { color: var(--primary); margin: 0; }
+    .celebration img {
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
     @keyframes fadeIn {
-      from{opacity:0; transform:translateY(6px)}
-      to{opacity:1; transform:none}
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Responsive tweaks */
-    @media (max-width:420px){
-      .buttons{ height:120px }
-      #noBtn{ left:58% }
+    .credit {
+      margin-top: 25px;
+      font-size: 12px;
+      color: #aaa;
+    }
+    
+    /* Confetti Layer */
+    .confetti {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 5;
     }
   </style>
 </head>
 <body>
 
-  <div class="card" role="main" aria-labelledby="title">
-    <h1 id="title">Franxine 💖</h1>
-    <p class="lead">Will you be my Valentine? — pick wisely 💫</p>
+  <div class="card">
+    <h1>Franxine 💖</h1>
+    <p class="lead">Will you be my Valentine? 🥺</p>
 
-    <div class="buttons" id="btnContainer" aria-hidden="false">
-      <button id="yesBtn" aria-label="Yes, I will be your valentine">YES 💕</button>
-      <button id="noBtn" aria-label="No, I won't">NO 😅</button>
+    <div class="buttons" id="btnContainer">
+      <button id="yesBtn">YES 💕</button>
+      <button id="noBtn">NO 😅</button>
     </div>
 
-    <div class="celebration" id="celebration" aria-live="polite">
-      <h2 id="celeText">💥 SHE SAID YES 💥</h2>
-      <p id="typedLine">I knew it, Franxine — you make my world brighter.</p>
-      <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="Celebration GIF">
+    <div class="celebration" id="celebration">
+      <h2>YAY! SHE SAID YES! 🎉</h2>
+      <p>I knew it, Franxine! You make my world brighter.</p>
+      <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="Happy GIF">
     </div>
 
-    <div class="confetti" id="confettiLayer" aria-hidden="true"></div>
-
-    <div class="credit">Made with ♥ by <strong>best boy kev</strong></div>
+    <div class="credit">Made with ❤️ for you</div>
   </div>
 
+  <div class="confetti" id="confettiLayer"></div>
+
   <script>
-    // Elements
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
     const container = document.getElementById('btnContainer');
     const celebration = document.getElementById('celebration');
     const confettiLayer = document.getElementById('confettiLayer');
-    const typedLine = document.getElementById('typedLine');
 
-    // Prevent the NO button from moving outside container and from overlapping YES button.
+    // This state tracks if the button has started moving yet
+    let hasMoved = false;
+
+    // FUNCTION: Move the NO button
     function moveNo() {
-      const contRect = container.getBoundingClientRect();
+      // 1. Get dimensions
+      const containerRect = container.getBoundingClientRect();
       const noRect = noBtn.getBoundingClientRect();
       const yesRect = yesBtn.getBoundingClientRect();
 
-      // Available area inside container for the top-left of the button
-      const maxX = Math.max(0, contRect.width - noRect.width);
-      const maxY = Math.max(0, contRect.height - noRect.height);
+      // 2. If this is the first move, switch to absolute positioning
+      if (!hasMoved) {
+        noBtn.style.position = 'absolute';
+        hasMoved = true;
+      }
 
-      // try a few times to avoid overlap with YES button
-      let attempt=0, x, y, noLeft, noTop;
+      // 3. Calculate max boundaries (ensure it stays inside container)
+      const maxX = containerRect.width - noRect.width;
+      const maxY = containerRect.height - noRect.height;
+
+      let randomX, randomY;
+      let overlap = false;
+      let attempts = 0;
+
+      // 4. Try finding a spot that doesn't overlap with YES button
       do {
-        x = Math.random() * maxX;
-        y = Math.random() * maxY;
-        // convert to absolute coords to check overlap
-        noLeft = contRect.left + x;
-        noTop  = contRect.top + y;
-        attempt++;
-        // if attempts run out, just accept last position
-      } while (attempt < 8 && rectsOverlap(
-        {left:noLeft, top:noTop, right:noLeft+noRect.width, bottom:noTop+noRect.height},
-        {left:yesRect.left, top:yesRect.top, right:yesRect.right, bottom:yesRect.bottom}
-      ));
+        randomX = Math.random() * maxX;
+        randomY = Math.random() * maxY;
 
-      // Apply within container coordinates (absolute left/top relative to container)
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
+        // Calculate absolute positions for overlap check
+        const newNoLeft = containerRect.left + randomX;
+        const newNoTop = containerRect.top + randomY;
+        const newNoRight = newNoLeft + noRect.width;
+        const newNoBottom = newNoTop + noRect.height;
+
+        // Simple rectangle overlap logic
+        overlap = !(
+          newNoRight < yesRect.left || 
+          newNoLeft > yesRect.right || 
+          newNoBottom < yesRect.top || 
+          newNoTop > yesRect.bottom
+        );
+        
+        attempts++;
+      } while (overlap && attempts < 10);
+
+      // 5. Apply new position
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
     }
 
-    // simple rect overlap check
-    function rectsOverlap(a,b){
-      return !(a.left >= b.right || a.right <= b.left || a.top >= b.bottom || a.bottom <= b.top);
-    }
-
-    // Events to trigger escape: desktop hover, mobile touchstart/tap, and click fallback
+    // EVENT LISTENERS
+    
+    // Desktop: Run away on hover
     noBtn.addEventListener('mouseover', moveNo);
-    noBtn.addEventListener('touchstart', (e)=>{
-      e.preventDefault(); // avoid immediate click on some browsers
+
+    // Mobile: Run away on touch
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault(); // Prevents the "click" from happening
       moveNo();
-    }, {passive:false});
-    noBtn.addEventListener('click', moveNo);
+    });
 
-    // YES click: show celebration, confetti, typed text
+    // Fallback: If they somehow manage to click it
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      moveNo();
+    });
+
+    // YES BUTTON FUNCTIONALITY
     yesBtn.addEventListener('click', () => {
-      // hide buttons
-      yesBtn.style.opacity = '0';
-      noBtn.style.opacity = '0';
-      setTimeout(()=> {
-        yesBtn.style.display = 'none';
-        noBtn.style.display = 'none';
-      }, 220);
-
-      // show celebration area
+      // Hide buttons
+      container.style.display = 'none';
+      
+      // Show celebration
       celebration.style.display = 'block';
-
-      // typed effect
-      const message = "I knew it, Franxine — you make my world brighter.";
-      typedLine.textContent = '';
-      typeText(typedLine, message, 35);
-
-      // confetti
-      launchConfetti(40);
-
-      // gentle heart bursts
-      heartBurst();
-      // optional sound (uncomment to enable; ensure browser allows autoplay after user interaction)
-      // playChime();
+      
+      // Launch Confetti
+      launchConfetti();
     });
 
-    // Simple typewriter
-    function typeText(el, text, speed){
-      let i=0;
-      function step(){
-        if(i <= text.length){
-          el.textContent = text.slice(0,i);
-          i++;
-          setTimeout(step, speed);
-        }
-      }
-      step();
-    }
-
-    /* ---------------- Confetti (simple DOM-based) ---------------- */
-    function launchConfetti(amount=30){
-      const colors = ['#ff4d6d','#ffd166','#8bd3dd','#ff7aa2','#b28dff'];
-      for(let i=0;i<amount;i++){
-        const c = document.createElement('div');
-        c.className = 'confetti-piece';
-        const size = 6 + Math.random()*10;
-        c.style.position = 'absolute';
-        c.style.left = (50 + (Math.random()*60 - 30)) + '%';
-        c.style.top = (10 + Math.random()*10) + '%';
-        c.style.width = `${size}px`;
-        c.style.height = `${size*0.6}px`;
-        c.style.background = colors[Math.floor(Math.random()*colors.length)];
-        c.style.opacity = (0.8 + Math.random()*0.2);
-        c.style.transform = `rotate(${Math.random()*360}deg)`;
-        c.style.borderRadius = '2px';
-        c.style.willChange = 'transform, opacity';
-        confettiLayer.appendChild(c);
-
-        // animate using JS
-        const angle = -90 + Math.random()*120;
-        const velocity = 140 + Math.random()*240;
-        const duration = 1200 + Math.random()*900;
-
-        animateConfetti(c, angle, velocity, duration);
-
-        // cleanup
-        setTimeout(()=> c.remove(), duration + 300);
+    // Simple Confetti Function
+    function launchConfetti() {
+      const colors = ['#ff4d6d', '#ff9a9e', '#fecfef', '#ffffff'];
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.style.position = 'absolute';
+        piece.style.width = Math.random() * 10 + 5 + 'px';
+        piece.style.height = Math.random() * 5 + 5 + 'px';
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.top = '-10px';
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        piece.style.animation = `fall ${Math.random() * 2 + 2}s linear forwards`;
+        confettiLayer.appendChild(piece);
       }
     }
 
-    function animateConfetti(el, angleDeg, velocity, duration){
-      const start = performance.now();
-      const angle = angleDeg * Math.PI/180;
-      const vx = Math.cos(angle) * velocity/1000;
-      const vy = Math.sin(angle) * velocity/1000;
-      const gravity = 0.0009; // px/ms^2
-      const startLeft = el.offsetLeft;
-      const startTop = el.offsetTop;
-
-      function frame(now){
-        const t = now - start;
-        if(t > duration) return;
-        const dx = vx * t;
-        const dy = vy * t + 0.5 * gravity * t * t;
-        el.style.transform = `translate(${dx}px, ${dy}px) rotate(${t/8}deg)`;
-        el.style.opacity = `${1 - t/duration}`;
-        requestAnimationFrame(frame);
+    // Inject CSS for confetti animation
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+      @keyframes fall {
+        to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
       }
-      requestAnimationFrame(frame);
-    }
-
-    /* Heart floating burst near card */
-    function heartBurst(){
-      const colors = ['#ff7aa2','#ff4d6d','#ffd6e0','#fce7f0'];
-      for(let i=0;i<10;i++){
-        const h = document.createElement('div');
-        h.className = 'heart';
-        h.innerHTML = '❤';
-        h.style.left = `${60 + Math.random()*20}%`;
-        h.style.top  = `${40 + Math.random()*20}%`;
-        h.style.fontSize = `${12 + Math.random()*18}px`;
-        h.style.color = colors[Math.floor(Math.random()*colors.length)];
-        document.body.appendChild(h);
-        // animate via CSS-like JS
-        animateHeart(h, 1800 + Math.random()*900);
-      }
-      // cleanup
-      setTimeout(()=> {
-        document.querySelectorAll('.heart').forEach(el=>el.remove());
-      }, 3200);
-    }
-    function animateHeart(el, duration){
-      const start = performance.now();
-      const x = (Math.random()*80 - 40);
-      function frame(now){
-        const t = now - start;
-        if(t > duration) return;
-        // ease up and fade out
-        const dy = - (t/10) - Math.pow(t/900,2)*80;
-        el.style.transform = `translateY(${dy}px) scale(${1 - t/(duration*1.2)})`;
-        el.style.opacity = `${1 - t/duration}`;
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    }
-
-    /* Optional sound - keep commented by default to avoid autoplay issues */
-    // function playChime(){
-    //   const audio = new Audio('data:audio/mp3;base64,//uQxAA...');
-    //   audio.volume = 0.9;
-    //   audio.play().catch(()=>{ /* browser blocked autoplay until user interacts, we already have click so should be fine */ });
-    // }
-
-    // Initial slight nudge so NO isn't on top of YES at page load
-    window.addEventListener('load', ()=> {
-      // position noBtn using moveNo once so it doesn't start overlapping
-      setTimeout(moveNo, 120);
-    });
-
-    // Keep NO inside container on resize
-    window.addEventListener('resize', ()=> {
-      // if still visible, reposition inside
-      if (noBtn.style.display !== 'none') moveNo();
-    });
+    `;
+    document.head.appendChild(styleSheet);
 
   </script>
 </body>
