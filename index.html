@@ -2,249 +2,149 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Franxine — Will you be my Valentine?</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+  <title>For Franxine 💖</title>
   <style>
     :root {
       --primary: #ff4d6d;
-      --bg1: #ff9a9e;
-      --bg2: #fecfef;
-      --card-bg: #ffffff;
-      --muted: #666;
+      --bg: #ff9a9e;
     }
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
     body {
       margin: 0;
-      font-family: 'Inter', 'Poppins', sans-serif;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(160deg, var(--bg1), var(--bg2));
-      overflow: hidden; 
+      background-color: var(--bg);
+      font-family: sans-serif;
+      overflow: hidden;
     }
 
-    /* Card */
+    /* The White Card */
     .card {
-      width: min(420px, 90%);
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 18px 42px rgba(0,0,0,0.15);
-      position: relative;
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      padding: 40px 20px;
+      border-radius: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       text-align: center;
-      z-index: 10;
-      overflow: hidden; 
-    }
-
-    h1 {
-      margin: 0;
-      color: var(--primary);
-      font-size: 1.8rem;
-    }
-    p.lead {
-      margin: 10px 0 20px 0;
-      color: var(--muted);
-      font-size: 1rem;
-    }
-
-    /* Button Container */
-    .buttons {
       position: relative;
-      height: 300px; /* Tall enough for the button to run around */
+      min-height: 400px; /* Keeps the 'playground' tall enough */
+    }
+
+    h1 { color: var(--primary); margin-bottom: 10px; }
+    p { color: #555; margin-bottom: 30px; }
+
+    /* Button Area */
+    .btn-container {
+      position: relative;
       width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start; 
-      gap: 20px;
-      margin-top: 20px;
+      height: 250px; /* This is the only area the NO button can move in */
     }
 
     button {
-      border: 0;
-      cursor: pointer;
-      padding: 12px 28px;
-      font-size: 1.1rem;
-      font-weight: 600;
+      padding: 12px 25px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
       border-radius: 50px;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      outline: none;
+      cursor: pointer;
+      position: absolute; /* Both buttons are absolute for better control */
+      transition: transform 0.2s ease;
     }
 
     #yesBtn {
-      background: linear-gradient(90deg, var(--primary), #ff7aa2);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
-      z-index: 100;
-      position: relative;
+      background-color: var(--primary);
+      color: white;
+      left: 20%; /* Start on the left */
+      top: 0;
+      z-index: 10;
     }
-    #yesBtn:active { transform: scale(0.95); }
 
     #noBtn {
-      background: #f0f0f0;
+      background-color: #f0f0f0;
       color: #333;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      position: relative;
-      z-index: 50;
-      /* 0.2s is fast enough to look like it's running, but smooth enough not to teleport */
-      transition: top 0.2s ease, left 0.2s ease; 
+      right: 20%; /* Start on the right */
+      top: 0;
+      /* This makes it slide smoothly: */
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
     }
 
-    /* Celebration Area */
-    .celebration {
+    .success-msg {
       display: none;
-      margin-top: 20px;
-      animation: fadeIn 0.6s ease;
-    }
-    .celebration h2 { color: var(--primary); margin: 0; }
-    .celebration img {
-      width: 100%;
-      border-radius: 12px;
-      margin-top: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      font-size: 22px;
+      color: var(--primary);
+      animation: pop 0.5s ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .credit {
-      margin-top: 25px;
-      font-size: 12px;
-      color: #aaa;
-    }
-    
-    .confetti {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 5;
+    @keyframes pop {
+      0% { transform: scale(0.5); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>Franxine 💖</h1>
-    <p class="lead">Will you be my Valentine? 🥺</p>
-
-    <div class="buttons" id="btnContainer">
-      <button id="yesBtn">YES 💕</button>
-      <button id="noBtn">NO 😅</button>
+  <div class="card" id="mainCard">
+    <div id="content">
+      <h1>Franxine 💖</h1>
+      <p>Will you be my Valentine?</p>
+      
+      <div class="btn-container" id="area">
+        <button id="yesBtn">YES 💖</button>
+        <button id="noBtn">NO 😅</button>
+      </div>
     </div>
 
-    <div class="celebration" id="celebration">
-      <h2>YAY! SHE SAID YES! 🎉</h2>
-      <p>I knew it, Franxine! You make my world brighter.</p>
-      <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="Happy GIF">
+    <div id="success" class="success-msg">
+      <h1>YAY! 🎉</h1>
+      <p>See you on Valentine's Day!</p>
+      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIyc3E3ZzR3eHByZzR3eHByZzR3eHByZzR3eHByZzR3eHByZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9IbZY3ZbeFpiyAB/giphy.gif" width="150">
     </div>
-
-    <div class="credit">Made with ❤️ for you</div>
   </div>
-
-  <div class="confetti" id="confettiLayer"></div>
 
   <script>
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
-    const container = document.getElementById('btnContainer');
-    const celebration = document.getElementById('celebration');
-    const confettiLayer = document.getElementById('confettiLayer');
+    const area = document.getElementById('area');
+    const content = document.getElementById('content');
+    const success = document.getElementById('success');
 
-    let isAbsolute = false;
+    function moveButton() {
+      // Get the size of the container area
+      const areaRect = area.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
 
-    function moveNo() {
-      const containerRect = container.getBoundingClientRect();
-      const noRect = noBtn.getBoundingClientRect();
-      const yesRect = yesBtn.getBoundingClientRect();
+      // Calculate max positions while keeping the button INSIDE the white card
+      const maxX = areaRect.width - btnRect.width;
+      const maxY = areaRect.height - btnRect.height;
 
-      if (!isAbsolute) {
-        noBtn.style.position = 'absolute';
-        noBtn.style.left = (noRect.left - containerRect.left) + 'px';
-        noBtn.style.top = (noRect.top - containerRect.top) + 'px';
-        isAbsolute = true;
-      }
+      // Generate random positions
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
 
-      const maxX = containerRect.width - noRect.width; 
-      const maxY = containerRect.height - noRect.height;
-
-      let randomX, randomY;
-      let overlap = false;
-      let attempts = 0;
-
-      do {
-        randomX = Math.random() * maxX;
-        randomY = Math.random() * maxY;
-
-        const newNoLeft = containerRect.left + randomX;
-        const newNoTop = containerRect.top + randomY;
-        const newNoRight = newNoLeft + noRect.width;
-        const newNoBottom = newNoTop + noRect.height;
-
-        // Check against YES button
-        overlap = !(
-          newNoRight < yesRect.left || 
-          newNoLeft > yesRect.right || 
-          newNoBottom < yesRect.top || 
-          newNoTop > yesRect.bottom
-        );
-        attempts++;
-      } while (overlap && attempts < 10);
-
+      // Apply the positions
       noBtn.style.left = randomX + 'px';
       noBtn.style.top = randomY + 'px';
+      
+      // Since it's now moved, remove the 'right' property from CSS
+      noBtn.style.right = 'auto';
     }
 
-    // 1. Desktop Hover
-    noBtn.addEventListener('mouseover', moveNo);
-
-    // 2. Mobile Touch - The most important part for her phone!
+    // Runaway logic for both Mouse and Touch
+    noBtn.addEventListener('mouseover', moveButton);
     noBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault(); // This stops the "click" so she can't say no
-      moveNo();
+      e.preventDefault(); // Prevents clicking it on mobile
+      moveButton();
     });
 
-    // 3. Fallback Click
-    noBtn.addEventListener('click', (e) => {
-      e.preventDefault(); 
-      moveNo();
-    });
-
+    // Success logic
     yesBtn.addEventListener('click', () => {
-      container.style.opacity = '0';
-      setTimeout(() => {
-        container.style.display = 'none';
-        celebration.style.display = 'block';
-        launchConfetti();
-      }, 500); 
+      content.style.display = 'none';
+      success.style.display = 'block';
     });
-
-    function launchConfetti() {
-      const colors = ['#ff4d6d', '#ff9a9e', '#fecfef', '#ffffff'];
-      for (let i = 0; i < 50; i++) {
-        const piece = document.createElement('div');
-        piece.style.position = 'absolute';
-        piece.style.width = Math.random() * 10 + 5 + 'px';
-        piece.style.height = Math.random() * 5 + 5 + 'px';
-        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        piece.style.left = Math.random() * 100 + '%';
-        piece.style.top = '-10px';
-        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
-        piece.style.animation = `fall ${Math.random() * 2 + 2}s linear forwards`;
-        confettiLayer.appendChild(piece);
-      }
-    }
-
-    const styleSheet = document.createElement("style");
-    styleSheet.innerText = `
-      @keyframes fall {
-        to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(styleSheet);
   </script>
 </body>
 </html>
