@@ -22,7 +22,7 @@
       align-items: center;
       justify-content: center;
       background: linear-gradient(160deg, var(--bg1), var(--bg2));
-      overflow: hidden; /* prevents scrollbars when confetti falls */
+      overflow: hidden; 
     }
 
     /* Card */
@@ -35,6 +35,7 @@
       position: relative;
       text-align: center;
       z-index: 10;
+      overflow: hidden; 
     }
 
     h1 {
@@ -51,11 +52,11 @@
     /* Button Container */
     .buttons {
       position: relative;
-      height: 180px; /* fixed height for the button to run around in */
+      height: 300px; /* Tall enough for the button to run around */
       width: 100%;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* Start at top of container */
+      align-items: flex-start; 
       gap: 20px;
       margin-top: 20px;
     }
@@ -67,16 +68,17 @@
       font-size: 1.1rem;
       font-weight: 600;
       border-radius: 50px;
-      transition: transform 0.1s ease;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      outline: none;
     }
 
     #yesBtn {
       background: linear-gradient(90deg, var(--primary), #ff7aa2);
       color: #fff;
       box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
-      z-index: 2; /* Ensure YES is always on top */
+      z-index: 100;
+      position: relative;
     }
     #yesBtn:active { transform: scale(0.95); }
 
@@ -84,8 +86,10 @@
       background: #f0f0f0;
       color: #333;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      /* Initially it is relative, JS turns it absolute to run away */
-      position: relative; 
+      position: relative;
+      z-index: 50;
+      /* 0.2s is fast enough to look like it's running, but smooth enough not to teleport */
+      transition: top 0.2s ease, left 0.2s ease; 
     }
 
     /* Celebration Area */
@@ -113,7 +117,6 @@
       color: #aaa;
     }
     
-    /* Confetti Layer */
     .confetti {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -151,87 +154,74 @@
     const celebration = document.getElementById('celebration');
     const confettiLayer = document.getElementById('confettiLayer');
 
-    // This state tracks if the button has started moving yet
-    let hasMoved = false;
+    let isAbsolute = false;
 
-    // FUNCTION: Move the NO button
     function moveNo() {
-      // 1. Get dimensions
       const containerRect = container.getBoundingClientRect();
       const noRect = noBtn.getBoundingClientRect();
       const yesRect = yesBtn.getBoundingClientRect();
 
-      // 2. If this is the first move, switch to absolute positioning
-      if (!hasMoved) {
+      if (!isAbsolute) {
         noBtn.style.position = 'absolute';
-        hasMoved = true;
+        noBtn.style.left = (noRect.left - containerRect.left) + 'px';
+        noBtn.style.top = (noRect.top - containerRect.top) + 'px';
+        isAbsolute = true;
       }
 
-      // 3. Calculate max boundaries (ensure it stays inside container)
-      const maxX = containerRect.width - noRect.width;
+      const maxX = containerRect.width - noRect.width; 
       const maxY = containerRect.height - noRect.height;
 
       let randomX, randomY;
       let overlap = false;
       let attempts = 0;
 
-      // 4. Try finding a spot that doesn't overlap with YES button
       do {
         randomX = Math.random() * maxX;
         randomY = Math.random() * maxY;
 
-        // Calculate absolute positions for overlap check
         const newNoLeft = containerRect.left + randomX;
         const newNoTop = containerRect.top + randomY;
         const newNoRight = newNoLeft + noRect.width;
         const newNoBottom = newNoTop + noRect.height;
 
-        // Simple rectangle overlap logic
+        // Check against YES button
         overlap = !(
           newNoRight < yesRect.left || 
           newNoLeft > yesRect.right || 
           newNoBottom < yesRect.top || 
           newNoTop > yesRect.bottom
         );
-        
         attempts++;
       } while (overlap && attempts < 10);
 
-      // 5. Apply new position
       noBtn.style.left = randomX + 'px';
       noBtn.style.top = randomY + 'px';
     }
 
-    // EVENT LISTENERS
-    
-    // Desktop: Run away on hover
+    // 1. Desktop Hover
     noBtn.addEventListener('mouseover', moveNo);
 
-    // Mobile: Run away on touch
+    // 2. Mobile Touch - The most important part for her phone!
     noBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault(); // Prevents the "click" from happening
+      e.preventDefault(); // This stops the "click" so she can't say no
       moveNo();
     });
 
-    // Fallback: If they somehow manage to click it
+    // 3. Fallback Click
     noBtn.addEventListener('click', (e) => {
-      e.preventDefault();
+      e.preventDefault(); 
       moveNo();
     });
 
-    // YES BUTTON FUNCTIONALITY
     yesBtn.addEventListener('click', () => {
-      // Hide buttons
-      container.style.display = 'none';
-      
-      // Show celebration
-      celebration.style.display = 'block';
-      
-      // Launch Confetti
-      launchConfetti();
+      container.style.opacity = '0';
+      setTimeout(() => {
+        container.style.display = 'none';
+        celebration.style.display = 'block';
+        launchConfetti();
+      }, 500); 
     });
 
-    // Simple Confetti Function
     function launchConfetti() {
       const colors = ['#ff4d6d', '#ff9a9e', '#fecfef', '#ffffff'];
       for (let i = 0; i < 50; i++) {
@@ -248,7 +238,6 @@
       }
     }
 
-    // Inject CSS for confetti animation
     const styleSheet = document.createElement("style");
     styleSheet.innerText = `
       @keyframes fall {
@@ -256,7 +245,6 @@
       }
     `;
     document.head.appendChild(styleSheet);
-
   </script>
 </body>
 </html>
