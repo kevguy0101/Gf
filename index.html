@@ -4,104 +4,255 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   <title>For Franxine 💖</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --primary: #ff4d6d;
-      --bg: #ff9a9e;
+      --secondary: #ff8fa3;
+      --bg: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
-    * { box-sizing: border-box; }
+    
+    * { 
+      box-sizing: border-box; 
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--bg);
-      font-family: sans-serif;
+      background: var(--bg);
+      font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
       overflow: hidden;
+      padding: 20px;
     }
 
     /* The White Card */
     .card {
       background: white;
       width: 90%;
-      max-width: 400px;
-      padding: 40px 20px;
+      max-width: 420px;
+      padding: 40px 25px;
       border-radius: 25px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow);
       text-align: center;
       position: relative;
-      min-height: 400px; /* Keeps the 'playground' tall enough */
+      overflow: hidden;
+      min-height: 450px;
+      transition: transform 0.3s ease;
     }
 
-    h1 { color: var(--primary); margin-bottom: 10px; }
-    p { color: #555; margin-bottom: 30px; }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .hearts-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      color: rgba(255, 77, 109, 0.1);
+      font-size: 20px;
+      animation: float 6s infinite linear;
+    }
+
+    h1 { 
+      color: var(--primary); 
+      margin-bottom: 15px;
+      font-size: 2.2rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .question {
+      color: #555; 
+      margin-bottom: 30px;
+      font-size: 1.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .highlight {
+      color: var(--primary);
+      font-weight: bold;
+    }
 
     /* Button Area */
     .btn-container {
       position: relative;
       width: 100%;
-      height: 250px; /* This is the only area the NO button can move in */
+      height: 200px;
+      margin-top: 30px;
+      z-index: 2;
     }
 
     button {
-      padding: 12px 25px;
-      font-size: 18px;
+      padding: 15px 35px;
+      font-size: 1.2rem;
       font-weight: bold;
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      position: absolute; /* Both buttons are absolute for better control */
-      transition: transform 0.2s ease;
+      position: absolute;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      z-index: 3;
+      min-width: 140px;
     }
 
     #yesBtn {
-      background-color: var(--primary);
+      background: linear-gradient(135deg, var(--primary), #ff758c);
       color: white;
-      left: 20%; /* Start on the left */
-      top: 0;
-      z-index: 10;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 120px;
+      z-index: 4;
+    }
+
+    #yesBtn:hover {
+      background: linear-gradient(135deg, #ff758c, var(--primary));
+      transform: translateX(-50%) scale(1.05);
+      box-shadow: 0 8px 20px rgba(255, 77, 109, 0.3);
     }
 
     #noBtn {
-      background-color: #f0f0f0;
+      background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
       color: #333;
-      right: 20%; /* Start on the right */
-      top: 0;
-      /* This makes it slide smoothly: */
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      left: 50%;
+      transform: translateX(-50%);
+      top: 50px;
+      z-index: 3;
+    }
+
+    #noBtn:hover {
+      background: linear-gradient(135deg, #e0e0e0, #d0d0d0);
     }
 
     .success-msg {
       display: none;
-      font-size: 22px;
       color: var(--primary);
-      animation: pop 0.5s ease;
+      animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      z-index: 1;
     }
 
-    @keyframes pop {
-      0% { transform: scale(0.5); }
-      100% { transform: scale(1); }
+    .success-msg h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .success-msg p {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      color: #666;
+    }
+
+    .success-gif {
+      width: 180px;
+      height: 180px;
+      border-radius: 20px;
+      object-fit: cover;
+      margin-top: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes popIn {
+      0% { 
+        transform: scale(0.5); 
+        opacity: 0;
+      }
+      100% { 
+        transform: scale(1); 
+        opacity: 1;
+      }
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .footer {
+      margin-top: 30px;
+      color: #888;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .card {
+        padding: 30px 20px;
+        min-height: 420px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .question {
+        font-size: 1.2rem;
+      }
+      
+      button {
+        padding: 12px 25px;
+        font-size: 1.1rem;
+        min-width: 120px;
+      }
+      
+      .btn-container {
+        height: 180px;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="card" id="mainCard">
+    <div class="hearts-container" id="heartsContainer"></div>
+    
     <div id="content">
       <h1>Franxine 💖</h1>
-      <p>Will you be my Valentine?</p>
+      <p class="question">Will you be my <span class="highlight">Valentine</span>?</p>
       
       <div class="btn-container" id="area">
         <button id="yesBtn">YES 💖</button>
         <button id="noBtn">NO 😅</button>
       </div>
+      
+      <p class="footer">Move your cursor/pointer over the NO button 😉</p>
     </div>
 
     <div id="success" class="success-msg">
       <h1>YAY! 🎉</h1>
-      <p>See you on Valentine's Day!</p>
-      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIyc3E3ZzR3eHByZzR3eHByZzR3eHByZzR3eHByZzR3eHByZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9IbZY3ZbeFpiyAB/giphy.gif" width="150">
+      <p>You've made me the happiest person! 💕</p>
+      <p>See you on Valentine's Day! 🥰</p>
+      <img class="success-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIyc3E3ZzR3eHByZzR3eHByZzR3eHByZzR3eHByZzR3eHByZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9IbZY3ZbeFpiyAB/giphy.gif" alt="Celebration">
+      <p class="footer">I love you! 💘</p>
     </div>
   </div>
 
@@ -111,39 +262,165 @@
     const area = document.getElementById('area');
     const content = document.getElementById('content');
     const success = document.getElementById('success');
+    const heartsContainer = document.getElementById('heartsContainer');
+    
+    // Create floating hearts
+    function createHearts() {
+      for (let i = 0; i < 15; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        heart.style.animationDelay = Math.random() * 6 + 's';
+        heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+        heartsContainer.appendChild(heart);
+      }
+    }
+    
+    // Initialize hearts
+    createHearts();
 
-    function moveButton() {
-      // Get the size of the container area
+    // Function to move button within boundaries
+    function moveButton(event) {
+      // Prevent default behavior for touch events
+      if (event.type === 'touchstart') {
+        event.preventDefault();
+      }
+      
+      // Get container dimensions
       const areaRect = area.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
-
-      // Calculate max positions while keeping the button INSIDE the white card
-      const maxX = areaRect.width - btnRect.width;
-      const maxY = areaRect.height - btnRect.height;
-
-      // Generate random positions
+      
+      // Calculate safe boundaries (with some padding)
+      const padding = 10;
+      const maxX = areaRect.width - btnRect.width - padding;
+      const maxY = areaRect.height - btnRect.height - padding;
+      
+      // Generate random positions within boundaries
       const randomX = Math.floor(Math.random() * maxX);
       const randomY = Math.floor(Math.random() * maxY);
-
-      // Apply the positions
+      
+      // Apply the new position
       noBtn.style.left = randomX + 'px';
       noBtn.style.top = randomY + 'px';
       
-      // Since it's now moved, remove the 'right' property from CSS
-      noBtn.style.right = 'auto';
+      // Add a little "escape" animation
+      noBtn.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        noBtn.style.transform = 'scale(1)';
+      }, 150);
+      
+      // Create a heart animation at the old position
+      createHeartAt(btnRect.left + btnRect.width/2, btnRect.top + btnRect.height/2);
+    }
+    
+    // Function to create a temporary heart animation
+    function createHeartAt(x, y) {
+      const heart = document.createElement('div');
+      heart.innerHTML = '💖';
+      heart.style.position = 'fixed';
+      heart.style.left = (x - 15) + 'px';
+      heart.style.top = (y - 15) + 'px';
+      heart.style.fontSize = '30px';
+      heart.style.zIndex = '100';
+      heart.style.pointerEvents = 'none';
+      heart.style.animation = 'popIn 0.5s ease-out forwards';
+      document.body.appendChild(heart);
+      
+      // Remove heart after animation
+      setTimeout(() => {
+        heart.remove();
+      }, 500);
+    }
+    
+    // Function to handle when "NO" is clicked (as a joke)
+    function noButtonClicked() {
+      // Create a shower of hearts
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          createHeartAt(
+            Math.random() * window.innerWidth,
+            Math.random() * window.innerHeight
+          );
+        }, i * 100);
+      }
+      
+      // Show a funny message
+      const messages = [
+        "Nice try! 😄",
+        "You can't resist! 💘",
+        "Think again! 😉",
+        "I know you want to say YES! 💖"
+      ];
+      
+      const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+      noBtn.textContent = randomMsg;
+      noBtn.style.background = 'linear-gradient(135deg, #ffd6dd, #ffb3c1)';
+      noBtn.style.color = '#d32f2f';
+      
+      // Reset after 1.5 seconds
+      setTimeout(() => {
+        noBtn.textContent = "NO 😅";
+        noBtn.style.background = 'linear-gradient(135deg, #f0f0f0, #e0e0e0)';
+        noBtn.style.color = '#333';
+      }, 1500);
     }
 
-    // Runaway logic for both Mouse and Touch
+    // Event listeners for "NO" button
     noBtn.addEventListener('mouseover', moveButton);
-    noBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault(); // Prevents clicking it on mobile
-      moveButton();
+    noBtn.addEventListener('touchstart', moveButton);
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      noButtonClicked();
+      moveButton(e); // Also move it when clicked
     });
 
-    // Success logic
+    // Success logic for "YES" button
     yesBtn.addEventListener('click', () => {
+      // Create a celebration effect
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          createHeartAt(
+            Math.random() * window.innerWidth,
+            Math.random() * window.innerHeight
+          );
+        }, i * 50);
+      }
+      
+      // Show success message with animation
       content.style.display = 'none';
       success.style.display = 'block';
+      
+      // Play a subtle sound (optional - can be added if you have a sound file)
+      // const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-happy-crowd-laugh-464.mp3');
+      // audio.volume = 0.3;
+      // audio.play().catch(e => console.log("Audio play failed:", e));
+    });
+    
+    // Make YES button follow cursor when near NO button (cute interaction)
+    document.addEventListener('mousemove', (e) => {
+      const yesRect = yesBtn.getBoundingClientRect();
+      const noRect = noBtn.getBoundingClientRect();
+      
+      // Calculate distance between buttons
+      const dx = yesRect.left - noRect.left;
+      const dy = yesRect.top - noRect.top;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      // If buttons are too close, make YES button "attract" to cursor
+      if (distance < 150) {
+        const areaRect = area.getBoundingClientRect();
+        const mouseX = e.clientX - areaRect.left;
+        const mouseY = e.clientY - areaRect.top;
+        
+        // Move YES button toward cursor (with boundaries)
+        const newX = Math.max(20, Math.min(mouseX - 70, areaRect.width - 140));
+        const newY = Math.max(100, Math.min(mouseY - 25, areaRect.height - 50));
+        
+        yesBtn.style.left = newX + 'px';
+        yesBtn.style.transform = 'translateX(0)';
+      }
     });
   </script>
 </body>
